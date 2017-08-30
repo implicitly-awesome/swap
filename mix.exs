@@ -17,7 +17,8 @@ defmodule Swap.Mixfile do
      docs: [extras: ["README.md"]],
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps()]
+     deps: deps(),
+     elixirc_paths: elixirc_paths(Mix.env)]
   end
 
   def application do
@@ -36,4 +37,7 @@ defmodule Swap.Mixfile do
       links: %{"Github" => "https://github.com/madeinussr/swap"}
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/fixtures"]
+  defp elixirc_paths(_),     do: ["lib"]
 end

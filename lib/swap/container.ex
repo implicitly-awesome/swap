@@ -29,7 +29,7 @@ defmodule Swap.Container do
 
       if should_swap do
         functions = delegate_module.__info__(:functions)
-        
+
         defmodule module do
           for {func_name, arity} <- functions do
             if arity > 0 do
