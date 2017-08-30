@@ -10,7 +10,7 @@ defmodule SwapWholeTest do
     def call, do: "NewDep2"
   end
 
-  setup_all do
+  setup do
     swap Test.Dependency, NewDep
 
     on_exit(fn() -> revert Test.Dependency end)
