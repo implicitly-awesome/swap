@@ -82,4 +82,18 @@ defmodule Swap.ContainerTest do
 
     assert Dep6.call() == DevDep.call()
   end
+
+  test "swaps a dependency for an appropriate environment (multiple envs)" do
+    defmodule Container7 do
+      use Swap.Container
+
+      swap Dep7, TestDep, env: [:dev, :test]
+    end
+
+    assert Dep7.call() == TestDep.call()
+
+    Mix.env(:dev)
+    assert Dep7.call() == TestDep.call()
+    Mix.env(:test)
+  end
 end

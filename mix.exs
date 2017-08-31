@@ -2,8 +2,8 @@ defmodule Swap.Mixfile do
   use Mix.Project
 
   @description """
-  Tiny library that allows you to swap dependencies in your app. Moreover it
-  allows you to inject dependencies with function decorator or with block syntax.
+  The library that allows you to swap dependencies in your app.
+  Also it allows you to inject dependencies with function decorator.
   """
 
   def project do
