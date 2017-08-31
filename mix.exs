@@ -26,7 +26,10 @@ defmodule Swap.Mixfile do
   end
 
   defp deps do
-    [{:decorator, "~> 0.0"}]
+    [
+      {:decorator, "~> 0.0"},
+      {:ex_doc, "~> 0.12", only: [:dev, :test, :docs]}
+    ]
   end
 
   defp package do
