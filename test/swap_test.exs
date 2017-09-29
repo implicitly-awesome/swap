@@ -1,5 +1,6 @@
 defmodule SwapTest do
   use ExUnit.Case, async: true
+  use Swap
   use Swap.Container
 
   defmodule Dependency do
@@ -36,5 +37,10 @@ defmodule SwapTest do
     end
 
     assert Dependency.call() == Dependency.call()
+  end
+
+  @decorate swap({Dependency, TestDep})
+  test "swaps a dependency for a test" do
+    assert Dependency.call() == TestDep.call()
   end
 end

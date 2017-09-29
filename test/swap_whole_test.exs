@@ -1,5 +1,6 @@
 defmodule SwapWholeTest do
   use ExUnit.Case, async: true
+  use Swap
   use Swap.Container
 
   defmodule NewDep do
@@ -14,6 +15,7 @@ defmodule SwapWholeTest do
     swap Test.Dependency, NewDep
 
     on_exit(fn() -> revert Test.Dependency end)
+    :ok
   end
 
   test "swaps a dependency for the whole test" do
@@ -25,11 +27,25 @@ defmodule SwapWholeTest do
       swap Test.Dependency, NewDep2
 
       on_exit(fn() -> revert Test.Dependency end)
+      :ok
     end
 
     test "it swaps" do
       assert Test.TestModule.call() == NewDep2.call()
     end
+  end
+
+  @decorate swap({Test.Dependency, NewDep2})
+  test "swaps a dependency for the whole test via decorator" do
+    assert Test.TestModule.call() == NewDep2.call()
+  end
+
+  test "swaps a dependency for a block" do
+    swap Test.Dependency, NewDep do
+      assert Test.TestModule.call() == NewDep.call()
+    end
+
+    assert Test.TestModule.call() == Test.Dependency.call()
   end
 
   test "and then everything is as before" do

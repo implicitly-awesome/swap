@@ -66,7 +66,7 @@ Moreover you can swap modules for some peace of code. Just wrap that code into `
 
 ```elixir
 defmodule Test do
-  use Swap
+  use Swap.Container
 
   def call do
     swap Dependency, Implementation do
@@ -79,6 +79,8 @@ end
 ```
 
 In this example results of `call/1` and `call2/1` invokation will be the same as in the example above.
+
+*For more cases see tests. ;)*
 
 ## LICENSE
 
