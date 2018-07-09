@@ -1,10 +1,9 @@
-defmodule SwapWholeTest do
+defmodule SwapModuleTest do
   @moduledoc """
-  In this test we swap modules for this test and reverts after.
+  In this test we swap modules with specific module (swapper).
   """
 
   use ExUnit.Case, async: true
-  use Swap
 
   defmodule ModuleA do
     def call(), do: "module A"
@@ -18,11 +17,15 @@ defmodule SwapWholeTest do
     def call(), do: "module C"
   end
 
-  setup do
-    swap(ModuleA, ModuleB)
+  defmodule Cond do
+    def swap?(), do: true
+  end
 
-    on_exit(fn() -> revert(ModuleA) end)
-    :ok
+  defmodule Swapper do
+    use Swap
+
+    swap(ModuleA, ModuleB, when: Cond.swap?())
+    swap(ModuleC, ModuleB, when: not Cond.swap?())
   end
 
   test "swaps ModuleA with ModuleB" do

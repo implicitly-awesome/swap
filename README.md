@@ -1,7 +1,7 @@
 # Swap
 
-The library that allows you to swap dependencies in your app.
-Also it allows you to inject dependencies with function decorator.
+The library that allows you to swap modules implementations in your app.
+Very handy for testing purposes. No need to define complex mocks, behaviours, configs...
 
 [CHANGELOG](https://github.com/madeinussr/exop/blob/master/CHANGELOG.md)
 
@@ -11,7 +11,7 @@ _Special thanks to [llxff](https://github.com/llxff) for great advices!_
 
 ```elixir
 def deps do
-  [{:swap, "~> 1.0.0"}]
+  [{:swap, "~> 1.1.0"}]
 end
 ```
 
@@ -19,30 +19,28 @@ end
 
 ### Global swap
 
-You can define a global swap of modules with `Swap.Container` (placed, for example in /lib directory):
+You can define a global swap of modules with a specific module (placed, for example in /lib directory):
 
 ```elixir
-defmodule Container do
-  use Swap.Container
+defmodule DepsContainer do
+  use Swap
 
-  swap SomeDependency, TestImplementation, env: :test
-  swap SomeDependency, DevImplementation, env: :dev
-
-  swap AnotherDependency, AnotherImplementation, env: [:dev, :test]
+  # when: can be ommited, an expression should return boolean value
+  swap SomeDependency, TestImplementation, when: Mix.env() == :test
+  swap SomeDependency, DevImplementation, when: Mix.env() == :dev
+  swap SomeDependency, ProdImplementation, when: SomeModule.some_func()
 end
 ```
 
 In this example the first argument module will be replaced with the second argument module in certain environment.
 You can define multiple implementations per dependency, as well as multiple environments for a swap.
 
-### Swap for a function
-
-In the example below I show how to swap modules for a certain function:
+### Revert swap
 
 ```elixir
 defmodule Dependency do
   def run, do: "dependency"
-end  
+end
 
 defmodule Implementation do
   def run, do: "implementation"
@@ -51,22 +49,37 @@ end
 defmodule Test do
   use Swap
 
-  @decorate swap({Dependency, Implementation})
-  def call, do: Dependency.run()
+  def call do
+    swap Dependency, Implementation
 
-  def call2, do: Dependency.run()
+    Dependency.run()
+  end
+
+  def call2 do
+    revert Dependency
+
+    Dependency.run()
+  end
 end
 ```
 
-Here `call/0` function returns `"implementation"` and `call2/0` returns `"dependency"`.
+Here `call/0` function returns `"implementation"` and `call2/0` returns `"dependency"` again.
 
 ### Swap for a peace of code
 
-Moreover you can swap modules for some peace of code. Just wrap that code into `swap do` block:
+You can swap modules for some peace of code. Just wrap that code into `swap do` block:
 
 ```elixir
+defmodule Dependency do
+  def run, do: "dependency"
+end
+
+defmodule Implementation do
+  def run, do: "implementation"
+end
+
 defmodule Test do
-  use Swap.Container
+  use Swap
 
   def call do
     swap Dependency, Implementation do
@@ -78,13 +91,17 @@ defmodule Test do
 end
 ```
 
-In this example results of `call/1` and `call2/1` invokation will be the same as in the example above.
+Here `call/0` function returns `"implementation"` and `call2/0` returns `"dependency"`.
 
-*For more cases see tests. ;)*
+_For more cases see /test directory ;)_
+
+## Please note
+
+There is no circular dependency check at the moment. Be careful.
 
 ## LICENSE
 
-    Copyright © 2017 Andrey Chernykh ( andrei.chernykh@gmail.com )
+    Copyright © 2018 Andrey Chernykh ( andrei.chernykh@gmail.com )
 
     This work is free. You can redistribute it and/or modify it under the
     terms of the MIT License. See the LICENSE file for more details.

@@ -1,46 +1,44 @@
 defmodule SwapTest do
   use ExUnit.Case, async: true
   use Swap
-  use Swap.Container
 
-  defmodule Dependency do
-    def call, do: "dependency"
-  end  
+  defmodule ModuleA do
+    def call, do: "module A"
 
-  defmodule TestDep do
-    def call, do: "this is test dependency"
+    def call2, do: "module A2"
   end
 
-  defmodule Test do
-    use Swap
-
-    @decorate swap({Dependency, TestDep})
-    def call, do: Dependency.call()
-
-    def call2, do: Dependency.call()
+  defmodule ModuleB do
+    def call, do: "module B"
   end
 
-  test "swaps a dependency for a single function" do
-    assert Test.call() == TestDep.call()
-    assert Test.call2() == Dependency.call()
+  test "swaps ModuleA with ModuleB and reverts it" do
+    swap(ModuleA, ModuleB)
+    assert ModuleA.call() == ModuleB.call()
+
+    revert(ModuleA)
+    assert ModuleA.call() != ModuleB.call()
   end
 
-  test "swaps a dependency and reverts it" do
-    swap Dependency, TestDep
-    assert Dependency.call() == TestDep.call()
-    revert Dependency
-  end
+  test "swaps ModuleA with ModuleB only for a block" do
+    assert ModuleA.call() != ModuleB.call()
 
-  test "swaps a dependency for a block of code" do
-    swap Dependency, TestDep do
-      assert Dependency.call() == TestDep.call()
+    block_result = swap(ModuleA, ModuleB) do
+      ModuleA.call()
     end
 
-    assert Dependency.call() == Dependency.call()
+    assert block_result == ModuleB.call()
+    assert ModuleA.call() != ModuleB.call()
   end
 
-  @decorate swap({Dependency, TestDep})
-  test "swaps a dependency for a test" do
-    assert Dependency.call() == TestDep.call()
+  test "raises an error if a func wasnt defined in a 'swapper' module" do
+    swap(ModuleA, ModuleB)
+
+    assert_raise RuntimeError, "call2/0 is not defined in Elixir.SwapTest.ModuleB", fn ->
+      ModuleA.call2()
+    end
+
+    revert(ModuleA)
+    assert ModuleA.call() != ModuleB.call()
   end
 end

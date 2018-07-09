@@ -8,8 +8,8 @@ defmodule Swap.Mixfile do
 
   def project do
     [app: :swap,
-     version: "1.0.1",
-     elixir: "~> 1.4",
+     version: "1.1.0",
+     elixir: ">= 1.5.0",
      name: "Swap",
      description: @description,
      package: package(),
