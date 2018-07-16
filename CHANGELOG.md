@@ -1,4 +1,9 @@
-## [1.1.0] - 2017.09.25
+## [1.1.1] - 2017.07.16
+
+- no decorator dependency
+- odd code was elimenated :)
+
+## [1.1.0] - 2018.07.09
 
 - no func decorator
 - no separate Container module

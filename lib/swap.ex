@@ -18,12 +18,6 @@ defmodule Swap do
     quote bind_quoted: [swapped_module: swapped_module, delegate_module: delegate_module, opts: opts] do
       Code.compiler_options(ignore_module_conflict: true)
 
-      should_swap =
-        cond do
-          is_nil(opts[:when]) -> true
-          true -> true
-        end
-
       if is_nil(opts[:when]) || opts[:when] == true do
         swapped_module_functions = swapped_module.__info__(:functions)
         delegate_module_functions = delegate_module.__info__(:functions)

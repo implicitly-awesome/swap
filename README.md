@@ -11,7 +11,7 @@ _Special thanks to [llxff](https://github.com/llxff) for great advices!_
 
 ```elixir
 def deps do
-  [{:swap, "~> 1.1.0"}]
+  [{:swap, "~> 1.1.1"}]
 end
 ```
 

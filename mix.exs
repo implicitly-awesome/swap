@@ -8,7 +8,7 @@ defmodule Swap.Mixfile do
 
   def project do
     [app: :swap,
-     version: "1.1.0",
+     version: "1.1.1",
      elixir: ">= 1.5.0",
      name: "Swap",
      description: @description,
@@ -26,10 +26,7 @@ defmodule Swap.Mixfile do
   end
 
   defp deps do
-    [
-      {:decorator, "~> 1.0"},
-      {:ex_doc, "~> 0.16", only: [:dev, :test, :docs]}
-    ]
+    [{:ex_doc, "~> 0.16", only: [:dev, :test, :docs]}]
   end
 
   defp package do
